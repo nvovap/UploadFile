@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32501B31201793B700A97986 /* 1 in Resources */ = {isa = PBXBuildFile; fileRef = 32501B30201793B700A97986 /* 1 */; };
 		32B2A9012017602C00A62EFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2A9002017602C00A62EFE /* AppDelegate.swift */; };
 		32B2A9032017602C00A62EFE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2A9022017602C00A62EFE /* ViewController.swift */; };
 		32B2A9062017602D00A62EFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32B2A9042017602D00A62EFE /* Main.storyboard */; };
 		32B2A9082017602D00A62EFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32B2A9072017602D00A62EFE /* Assets.xcassets */; };
 		32B2A90B2017602D00A62EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32B2A9092017602D00A62EFE /* LaunchScreen.storyboard */; };
+		32B2A913201770E000A62EFE /* NVPUploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B2A912201770DF00A62EFE /* NVPUploadImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32501B30201793B700A97986 /* 1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 1; sourceTree = "<group>"; };
 		32B2A8FD2017602C00A62EFE /* UploadImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UploadImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32B2A9002017602C00A62EFE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32B2A9022017602C00A62EFE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +25,7 @@
 		32B2A9072017602D00A62EFE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32B2A90A2017602D00A62EFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		32B2A90C2017602D00A62EFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32B2A912201770DF00A62EFE /* NVPUploadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVPUploadImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +58,8 @@
 		32B2A8FF2017602C00A62EFE /* UploadImage */ = {
 			isa = PBXGroup;
 			children = (
+				32501B30201793B700A97986 /* 1 */,
+				32B2A912201770DF00A62EFE /* NVPUploadImage.swift */,
 				32B2A9002017602C00A62EFE /* AppDelegate.swift */,
 				32B2A9022017602C00A62EFE /* ViewController.swift */,
 				32B2A9042017602D00A62EFE /* Main.storyboard */,
@@ -97,6 +103,11 @@
 					32B2A8FC2017602C00A62EFE = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -124,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32B2A90B2017602D00A62EFE /* LaunchScreen.storyboard in Resources */,
+				32501B31201793B700A97986 /* 1 in Resources */,
 				32B2A9082017602D00A62EFE /* Assets.xcassets in Resources */,
 				32B2A9062017602D00A62EFE /* Main.storyboard in Resources */,
 			);
@@ -138,6 +150,7 @@
 			files = (
 				32B2A9032017602C00A62EFE /* ViewController.swift in Sources */,
 				32B2A9012017602C00A62EFE /* AppDelegate.swift in Sources */,
+				32B2A913201770E000A62EFE /* NVPUploadImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
