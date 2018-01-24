@@ -1,9 +1,41 @@
 
 var fs = require('fs');
 
+var jsftp = require("jsftp");
+
+
+
+
+//installing FTP Server
+
+
+
+// ftp.on('error', function(err){
+//   console.log(err);
+// });
+
+
+//         //./manager1/images3/
+// ftp.list("./manager1/images3/", (err, res) => {
+//   console.log(res);
+//   // Prints something like
+//   // -rw-r--r--   1 sergi    staff           4 Jun 03 09:32 testfile1.txt
+//   // -rw-r--r--   1 sergi    staff           4 Jun 03 09:31 testfile2.txt
+//   // -rw-r--r--   1 sergi    staff           0 May 29 13:05 testfile3.txt
+//   // ...
+// });
+
+
+// ftp.on('jsftp_debug', function(eventType, data) {
+//     console.log('DEBUG: ', eventType);
+//     console.log(JSON.stringify(data, null, 2));
+// });
+
 
 
 exports.endUpload = function(req,res){
+
+
 
   var filename = "";
   var username = ""; 
@@ -15,6 +47,9 @@ exports.endUpload = function(req,res){
     
 
     console.log('Field ON');
+
+    val  = val.replace( "\r\n", "" );
+    
 
     if (fieldname == 'user') {
       username = val;
@@ -31,15 +66,128 @@ exports.endUpload = function(req,res){
   });
 
   req.busboy.on('finish', function() {
-    console.log("username = " + username + " folder = " + folder + " filename = " + filename);
 
-    var DBFiles =  require('./Mongo/DBFiles');
+   // var pathToFTP   = username+"/"+folder+"/"+filename;
+    var pathToLocal = "./public/"+username+"/"+folder+"/"+filename;
 
+    if (folder == "") {
+    //  pathToFTP   = username+"/"+filename;
+      pathToLocal = "./public/"+username+"/"+filename;
+    } 
+
+    //pathToLocal = pathToLocal.replace( "\r\n", "" );
+   
+    console.log(pathToLocal);
+
+    var USER = "allmanager";
+    var PASS = "iq7mKydXMnWk";
+
+    var ftp = new jsftp({
+      host: "ftp.mlife.dp.ua",
+      port: 21, // defaults to 21
+      user: USER, // defaults to "anonymous"
+      pass: PASS // defaults to "@anonymous"
+    });
+
+
+    // ftp.raw("quit", (err, data) => {
+    //   if (err) {}
+    
+ 
       
-    DBFiles.newFile(username, folder, filename, 0, 0,  res);
+    
+
+    ftp.auth(USER, PASS, err => { 
+      console.log(err);
+      console.log("USERRRR");
 
 
-    //res.send('OK');
+      console.log(folder);
+
+      ftp.raw("CWD", username, (err, data) => { 
+
+          if (err) { 
+            console.log("ERROR");
+            console.log(err);
+            res.send('Error');
+          } else {
+
+              if (folder != "") {
+                ftp.raw("CWD", folder, (err, data) => { 
+
+                  if (err) {
+                    ftp.raw("mkd", folder, (err, data) => {});
+                    ftp.raw("CWD", folder, (err, data) => {});
+                  }
+
+
+                  ftp.put(pathToLocal, filename, err => {
+                    if (err) {
+                      console.log("ERROR");
+                      console.log(err);
+                      res.send('Error');
+                    } else {
+                      //console.log("File (" + pathToFTP + ") copied successfully!" );
+                      res.send('OK'); 
+                    }
+                  });
+
+
+                });
+              } else {
+                ftp.put(pathToLocal, filename, err => {
+                  if (err) {
+                    console.log("ERROR");
+                    console.log(err);
+                    res.send('Error');
+                  } else {
+                 //   console.log("File (" + pathToFTP + ") copied successfully!" );
+                    res.send('OK'); 
+                  }
+                });
+
+              }
+              
+              
+
+          };
+      }); 
+
+     // });
+
+
+
+    });
+
+
+    
+
+
+    // fs.readFile("./public/manager1/images3/1.jpg", "binary", function(err, data) {
+    //   if (err) {
+    //     console.log(err);
+    //     res.send('Error');
+    //   } else {
+
+    //     console.log(" Data -------- Read");
+    //   //  console.log(data);
+
+    //   //  var buffer = new Buffer(data, "binary");
+
+    //     ftp.put(data, "./1.jpg", err => {
+    //       if (!err) {
+    //         console.log("File transferred successfully!");
+    //         res.send('Error');
+    //       } else {
+    //         console.log("File (" + pathToFTP + ") copied successfully!" );
+    //         res.send('OK'); 
+    //       }
+    //     });
+    //   }
+    // });
+
+    
+
   });
 
 
@@ -62,6 +210,8 @@ exports.uploadBlock = function(req,res){
         console.log('Field [' + fieldname + ']: value: ' + val);
 
         console.log('Field ON');
+
+        val  = val.replace( "\r\n", "" );
 
         if (fieldname == 'user') {
           username = val;
@@ -148,6 +298,9 @@ exports.getSizeFile = function(req,res){
 
     req.busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
       console.log('Field [' + fieldname + ']: value: ' + val);
+
+
+      val  = val.replace( "\r\n", "" );
 
       if (fieldname == 'user') {
       	username = val;

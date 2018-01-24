@@ -14,30 +14,20 @@ import UIKit
 //}
 
 
+protocol NVPUploadImageDelegate: class {
+    func fullUploadFile(_ fileName: String, order: String)
+}
+
 class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate {
     
-//    private static var __once: () = {
-//            Static.instance = NVPUploadImage()
-//            
-//            
-//            
-//            let configuration = URLSessionConfiguration.background(withIdentifier: "bgNVOVAPSessionConfiguration")
-//            configuration.httpMaximumConnectionsPerHost = 4; //iOS Default is 4
-//            configuration.timeoutIntervalForRequest = 600.0; //30min allowance; iOS default is 60 seconds.
-//            configuration.timeoutIntervalForResource = 120.0; //2min; iOS Default is 7 days
-//            configuration.allowsCellularAccess = true
-//                
-//            Static.instance!.backgroundSession = Foundation.URLSession(configuration: configuration, delegate: Static.instance!, delegateQueue: nil) //Static.instance!.downloadQueue)
-//        }()
     
-   // var backgroundSession: Foundation.URLSession!
-    
-    
+    weak var delegate: NVPUploadImageDelegate?
+
     private lazy var backgroundSession: URLSession = {
-        let config = URLSessionConfiguration.background(withIdentifier: "MySession")
+        let config = URLSessionConfiguration.background(withIdentifier: "MySession\(arc4random())")
         config.isDiscretionary = true
         config.sessionSendsLaunchEvents = true
-        return Foundation.URLSession.init(configuration: config, delegate: self, delegateQueue: nil)  //(configuration: config, delegate: self, delegateQueue: nil)
+        return Foundation.URLSession(configuration: config, delegate: self, delegateQueue: nil)  //(configuration: config, delegate: self, delegateQueue: nil)
     }()
     
     
@@ -78,7 +68,7 @@ class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate 
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if error != nil {
-            print("session \(session) occurred error \(error?.localizedDescription)")
+            print("session \(session) occurred error \(String(describing: error?.localizedDescription))")
             
             runing = false
             
@@ -99,18 +89,18 @@ class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate 
         
     }
     
-    private func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
-        
-        
-        completionHandler(Foundation.URLSession.ResponseDisposition.allow)
-        
-    }
+//    private func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveResponse response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
+//
+//
+//        completionHandler(Foundation.URLSession.ResponseDisposition.allow)
+//
+//    }
     
     
     
-    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
-        //        responseData.appendData(data)
-    }
+//    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
+//      //  responseData.appendData(data)
+//    }
     
     
     
@@ -118,7 +108,7 @@ class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate 
     //=================================
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print("session error: \(error?.localizedDescription).")
+        print("session error: \(String(describing: error?.localizedDescription)).")
     }
     
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
@@ -137,7 +127,7 @@ class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate 
                 size = sizeTemp 
             }
             
-            
+            print(user)
             self.uploadFileBlock(size)
             
             
@@ -145,8 +135,22 @@ class NVPUploadImage : NSObject, URLSessionDelegate, URLSessionDownloadDelegate 
         } else if downloadTask.taskDescription == "--GetFile--" {
             
             if allSend == false {
-                self.getInfoFile()
+//                //delay
+//                DispatchQueue.main.asyncAfter(wallDeadline: .now() + .seconds(4), execute: {
+                    self.getInfoFile()
+//                })
             }
+        } else if downloadTask.taskDescription == "--EndSendFile--" {
+            
+            runing = false
+            
+            
+            if let data = try? Data(contentsOf: location), let str = String(data: data, encoding: String.Encoding.utf8), str == "OK" {
+                if let delegate = delegate {
+                    delegate.fullUploadFile(fileName, order: folder)
+                }
+            }
+            
         }
     }
     
